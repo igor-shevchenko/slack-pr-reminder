@@ -7,9 +7,10 @@ name = "pypi"
 
 [packages]
 
-PyGithub = "*"
-PyYAML = "==3.12"
+pygithub = "*"
+pyyaml = "==3.12"
 requests = "==2.13.0"
+attrs = "*"
 
 
 [dev-packages]

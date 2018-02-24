@@ -26,8 +26,7 @@ def format_message(pull_requests):
 
 
 def format_pull_request(pull_request):
-    review_requests = list(pull_request.get_reviewer_requests())
-    reviewers_list = ', '.join(get_slack_username(r.login) for r in review_requests)
+    reviewers_list = ', '.join(get_slack_username(r) for r in pull_request.reviewers)
     
     age = (datetime.now() - pull_request.created_at).days
     if age == 0:
@@ -39,10 +38,10 @@ def format_pull_request(pull_request):
     else:
         emoji = ''
 
-    result = '\n* {2} <{0}|{1}> by _{3}_'.format(pull_request.html_url, pull_request.title, emoji, pull_request.user.name)
+    result = '\n* {2} <{0}|{1}> by _{3}_'.format(pull_request.url, pull_request.title, emoji, pull_request.creator)
     
     if reviewers_list:
-        if len(review_requests) == 1:
+        if len(pull_request.reviewers) == 1:
             result += '. Reviewer: ' + reviewers_list
         else:
             result += '. Reviewers: ' + reviewers_list
@@ -72,4 +71,3 @@ def send_reminder():
 
 if __name__ == '__main__':
     send_reminder()
-
