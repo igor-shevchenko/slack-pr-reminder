@@ -1,3 +1,0 @@
-PyGithub==1.35
-PyYAML==3.12
-requests==2.13.0
