@@ -5,7 +5,7 @@ from models import PullRequest
 class GitHubConnector(object):
     def __init__(self, config):
         self.config = config
-        self.github = Github(config['github_access_token'])
+        self.github = Github(config['access_token'])
 
     def get_pull_requests(self):
         pull_requests_by_repo = [self.get_pull_requests_for_repo(repo) for repo in self.config['repositories']]

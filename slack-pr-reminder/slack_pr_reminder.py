@@ -9,8 +9,8 @@ with open('config.yaml') as f:
     config = yaml.load(f)
 
 def get_slack_username(user):
-    if user in config['users']:
-        return '@' + config['users'][user]
+    if user in config['github']['users']:
+        return '@' + config['github']['users'][user]
     return user
 
 
@@ -60,7 +60,7 @@ def send_to_slack(message):
 
 
 def send_reminder():
-    connector = GitHubConnector(config)
+    connector = GitHubConnector(config['github'])
     pull_requests = connector.get_pull_requests()
     if not pull_requests:
         return
