@@ -1,5 +1,3 @@
-from datetime import datetime
-
 import requests
 import yaml
 
@@ -8,11 +6,6 @@ from github_connector import GitHubConnector
 with open('config.yaml') as f:
     config = yaml.load(f)
 
-def get_slack_username(user):
-    if user in config['github']['users']:
-        return '@' + config['github']['users'][user]
-    return user
-
 
 def format_message(pull_requests):
     count = len(pull_requests)
@@ -20,34 +13,9 @@ def format_message(pull_requests):
         msg = 'There is *1* pull request waiting for review: '
     else:
         msg = 'There are *' + str(count) + '* pull requests waiting for review: '
-    msg += '\n'
-    msg += ''.join(format_pull_request(pr) for pr in pull_requests)
+    msg += '\n\n'
+    msg += '\n'.join(pr.format() for pr in pull_requests)
     return msg
-
-
-def format_pull_request(pull_request):
-    reviewers_list = ', '.join(get_slack_username(r) for r in pull_request.reviewers)
-    
-    age = (datetime.now() - pull_request.created_at).days
-    if age == 0:
-        emoji = ' :new:'
-    elif age >= 14:
-        emoji = ':bangbang:'
-    elif age >= 7:
-        emoji = ':exclamation:'
-    else:
-        emoji = ''
-
-    result = '\n* {2} <{0}|{1}> by _{3}_'.format(pull_request.url, pull_request.title, emoji, pull_request.creator)
-    
-    if reviewers_list:
-        if len(pull_request.reviewers) == 1:
-            result += '. Reviewer: ' + reviewers_list
-        else:
-            result += '. Reviewers: ' + reviewers_list
-    
-    return result
-
 
 def send_to_slack(message):
     payload = {

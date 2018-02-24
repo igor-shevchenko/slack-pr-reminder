@@ -20,4 +20,4 @@ class GitHubConnector(object):
     def convert_pull_request(self, pr):
         reviewers = [r.login for r in pr.get_reviewer_requests()]
         return PullRequest(reviewers=reviewers, created_at=pr.created_at, url=pr.html_url,
-                           title=pr.title, creator=pr.user.name)
+                           title=pr.title, creator=pr.user.name, config=self.config)
