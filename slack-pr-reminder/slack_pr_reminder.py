@@ -1,31 +1,17 @@
 from datetime import datetime
+
 import requests
-from github import Github
 import yaml
 
+from github_connector import GitHubConnector
 
 with open('config.yaml') as f:
     config = yaml.load(f)
-
-github = Github(config['github_access_token'])
-
 
 def get_slack_username(user):
     if user in config['users']:
         return '@' + config['users'][user]
     return user
-
-
-def get_pull_requests():
-    pull_requests_by_repo = [get_pull_requests_for_repo(repo) for repo in config['repositories']]
-    pull_requests = [pr for repo in pull_requests_by_repo for pr in repo]
-    return pull_requests
-
-
-def get_pull_requests_for_repo(repo_name):
-    repo = github.get_repo(repo_name)
-    pull_requests = repo.get_pulls()
-    return list(pull_requests)
 
 
 def format_message(pull_requests):
@@ -75,7 +61,8 @@ def send_to_slack(message):
 
 
 def send_reminder():
-    pull_requests = get_pull_requests()
+    connector = GitHubConnector(config)
+    pull_requests = connector.get_pull_requests()
     if not pull_requests:
         return
     message = format_message(pull_requests)
