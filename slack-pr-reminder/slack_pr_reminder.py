@@ -2,6 +2,7 @@ import requests
 import yaml
 
 from github_connector import GitHubConnector
+from bitbucket_connector import BitbucketConnector
 
 with open('config.yaml') as f:
     config = yaml.load(f)
@@ -28,10 +29,18 @@ def send_to_slack(message):
 
 
 def send_reminder():
-    connector = GitHubConnector(config['github'])
-    pull_requests = connector.get_pull_requests()
+    pull_requests = []
+
+    if 'github' in config:
+        connector = GitHubConnector(config['github'])
+        pull_requests += connector.get_pull_requests()
+    if 'bitbucket' in config:
+        connector = BitbucketConnector(config['bitbucket'])
+        pull_requests += connector.get_pull_requests()
+
     if not pull_requests:
         return
+
     message = format_message(pull_requests)
     print(message)
     send_to_slack(message)

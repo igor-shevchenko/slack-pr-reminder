@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import attr
 
 
@@ -31,7 +31,7 @@ class PullRequest(object):
 
     @property
     def age_emoji(self):
-        age = (datetime.now() - self.created_at).days
+        age = (datetime.now(timezone.utc) - self.created_at).days
         if age == 0:
             return ' :new:'
         elif age >= 14:

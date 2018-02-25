@@ -11,6 +11,8 @@ pygithub = "*"
 pyyaml = "==3.12"
 requests = "==2.13.0"
 attrs = "*"
+pybitbucket = "*"
+python-dateutil = "*"
 
 
 [dev-packages]
